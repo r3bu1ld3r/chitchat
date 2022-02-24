@@ -28,6 +28,8 @@ use scuttlebutt::{FailureDetectorConfig, ScuttleButt};
 use structopt::StructOpt;
 use tokio::sync::Mutex;
 
+mod proxy;
+
 struct Api {
     scuttlebutt: Arc<Mutex<ScuttleButt>>,
 }
