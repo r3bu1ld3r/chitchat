@@ -26,7 +26,7 @@ mod message;
 pub(crate) mod serialize;
 mod state;
 
-use std::collections::HashSet;
+use std::collections::{HashSet, HashMap};
 
 use delta::Delta;
 use failure_detector::FailureDetector;
@@ -215,9 +215,25 @@ impl ScuttleButt {
             .nodes()
             .filter(|node_id| *node_id != &self.self_node_id)
             .collect::<Vec<_>>();
-        for node_id in &cluster_nodes {
-            self.failure_detector.update_node_liveliness(node_id);
+
+
+        let mut node_group_by_addr = HashMap::new();
+        for node_id in &cluster_nodes { 
+            let node_ids = node_group_by_addr
+                .entry(&node_id.gossip_public_address)
+                .or_insert_with(|| vec![]);
+            node_ids.push(node_id.clone())
         }
+
+        for (_, mut node_ids) in node_group_by_addr.into_iter() {
+            node_ids.sort_by(|left, right| right.id.cmp(&left.id));
+            self.failure_detector.update_node_liveliness(node_ids[0]);
+        }
+
+
+        // for node_id in &cluster_nodes {
+        //     self.failure_detector.update_node_liveliness(node_id);
+        // }
 
         let live_nodes_after = self.live_nodes().cloned().collect::<HashSet<_>>();
         if live_nodes_before != live_nodes_after {
