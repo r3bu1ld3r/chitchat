@@ -69,7 +69,7 @@ impl FailureDetector {
     /// Marks a node as dead or live.
     pub fn update_node_liveliness(&mut self, node_id: &NodeId) {
         if let Some(phi) = self.phi(node_id) {
-            println!("PHI -> {}", phi);
+            println!("PHI {} -> {}", node_id.id ,phi);
             debug!(node_id = ?node_id, phi = phi, "updating node liveliness");
             if phi > self.config.phi_threshold {
                 self.live_nodes.remove(node_id);
