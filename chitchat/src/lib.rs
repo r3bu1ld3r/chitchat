@@ -25,7 +25,7 @@ use crate::digest::Digest;
 pub use crate::message::ChitchatMessage;
 use crate::serialize::Serializable;
 pub use crate::server::{spawn_chitchat, ChitchatHandle};
-use crate::state::NodeState;
+pub use crate::state::NodeState;
 pub use crate::state::{ClusterState, SerializableClusterState};
 
 /// Map key for the heartbeat node value.
